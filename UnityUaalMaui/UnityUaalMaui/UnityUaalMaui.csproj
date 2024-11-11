@@ -22,7 +22,7 @@
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">22.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">34.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
@@ -89,11 +89,12 @@
 	  <Folder Include="Data\" />
 	</ItemGroup>
 	<ItemGroup>
+	<!--
 	  <Reference Include="iOSBridge">
 	    <HintPath>..\iOSBridge\bin\Debug\net8.0-ios\iOSBridge.dll</HintPath>
-	  </Reference>
+	  </Reference>-->
 	  <Reference Include="AndroidBridge">
-	    <HintPath>..\AndroidBridge\bin\Debug\net8.0-android\AndroidBridge.dll</HintPath>
+	    <HintPath>..\AndroidBridge\bin\Release\net8.0-android\AndroidBridge.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 <!--

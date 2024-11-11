@@ -2,7 +2,7 @@
 using System;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
-using iOSBridge;
+//using iOSBridge;
 using UnityUaalMaui.Unity;
 
 namespace UnityUaalMaui;

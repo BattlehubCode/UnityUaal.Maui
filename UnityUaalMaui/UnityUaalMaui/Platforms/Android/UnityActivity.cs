@@ -71,10 +71,12 @@ public class UnityActivity : Activity,
         Android.Util.Log.Info(GetType().Name, nameof(OnStop) + "|" + GetHashCode() + "|");
         base.OnStop();
 
+        /*
         if (!MultiWindowSupport.GetAllowResizableWindow(this))
         {
             return;
         }
+        */
 
         Android.Util.Log.Info(GetType().Name, "UnityPlayer.Pause");
         player.Pause();
@@ -87,10 +89,12 @@ public class UnityActivity : Activity,
 
         MultiWindowSupport.SaveMultiWindowMode(this);
 
+/*
         if (MultiWindowSupport.GetAllowResizableWindow(this))
         {
             return;
         }
+        */
 
         Android.Util.Log.Info(GetType().Name, "UnityPlayer.Pause");
         player.Pause();
@@ -101,10 +105,12 @@ public class UnityActivity : Activity,
         Android.Util.Log.Info(GetType().Name, nameof(OnStart) + "|" + GetHashCode() + "|");
         base.OnStart();
 
+/*
         if (!MultiWindowSupport.GetAllowResizableWindow(this))
         {
             return;
         }
+        */
 
         Android.Util.Log.Info(GetType().Name, "UnityPlayer.Resume");
         player.Resume();
@@ -115,10 +121,12 @@ public class UnityActivity : Activity,
         Android.Util.Log.Info(GetType().Name, nameof(OnResume) + "|" + GetHashCode() + "|");
         base.OnResume();
 
+/*
         if (MultiWindowSupport.GetAllowResizableWindow(this) && !MultiWindowSupport.IsMultiWindowModeChangedToTrue(this))
         {
             return;
         }
+        */
 
         Android.Util.Log.Info(GetType().Name, "UnityPlayer.Resume");
         player.Resume();
@@ -154,8 +162,9 @@ public class UnityActivity : Activity,
 
     public void RequestPermissions(PermissionRequest request)
     {
-        int requestCode = player.AddPermissionRequest(request);
+       // int requestCode = player.AddPermissionRequest(request);
 
+        player.AddPermissionRequest(request);
         // request.getPermissionNames => Not accesible? => Reach in via reflection?
 
         //this.RequestPermissions(request. request.getPermissionNames(), requestCode);
