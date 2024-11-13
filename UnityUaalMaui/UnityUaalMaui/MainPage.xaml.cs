@@ -2,7 +2,7 @@
 using System;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
-using iOSBridge;
+//using iOSBridge;
 using UnityUaalMaui.Unity;
 
 namespace UnityUaalMaui;
@@ -26,11 +26,17 @@ public partial class MainPage : ContentPage
 
         toast.Show().ConfigureAwait(false);
 
+        /*
         switch (e.EventName)
         {
             case Unity.UnityEvents.ShowMainWindow:
                 UnityBridge.ShowMainWindow();
                 break;
+        }*/
+
+        if (e.EventContent.Contains("ShowMainWindow"))
+        {
+            UnityBridge.ShowMainWindow();
         }
     }
 

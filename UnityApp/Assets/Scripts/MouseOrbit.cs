@@ -58,11 +58,23 @@ public class MouseOrbit : MonoBehaviour
     }
     void TouchSwipe()
     {
-        if (Input.touchCount == 1)
+        
+        if (Input.touchCount == 1 || Input.GetMouseButton(0))
         {
             // if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
             //     return;
 
+            if (Input.GetMouseButtonDown(0))
+            {
+                fingerUp = Input.mousePosition;
+                fingerDown = Input.mousePosition;
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                fingerDown = Input.mousePosition;
+                CheckSwipe();
+            }
 
             foreach (Touch touch in Input.touches)
             {
@@ -81,8 +93,6 @@ public class MouseOrbit : MonoBehaviour
                         CheckSwipe();
                     }
                 }
-
-
             }
 
 

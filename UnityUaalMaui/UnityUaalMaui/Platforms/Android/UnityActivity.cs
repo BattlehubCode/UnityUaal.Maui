@@ -1,17 +1,12 @@
-﻿
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.Content.Res;
-using Android.Graphics.Fonts;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
-using AndroidX.Navigation;
+using AndroidX.CoordinatorLayout.Widget;
 using Com.Unity3d.Player;
-using Java.Lang;
-using UnityUaalMaui.Unity;
-using static Microsoft.Maui.ApplicationModel.Platform;
 
 namespace UnityUaalMaui;
 
@@ -21,28 +16,125 @@ namespace UnityUaalMaui;
           //ScreenOrientation = ScreenOrientation.FullUser,
           ResizeableActivity = false,
           LaunchMode = LaunchMode.SingleTask)]
-[MetaData(name: "unityplayer.UnityActivity", Value ="true")]
-[MetaData(name: "notch_support", Value = "true")]
 public class UnityActivity : Activity,
-                             IUnityPlayerLifecycleEvents,
-                             INativeUnityBridge,
-                             IUnityPermissionRequestSupport
+                             IUnityPlayerLifecycleEvents, IUnityPermissionRequestSupport, 
+                             
+                             /*IUnityPlayerSupport,*/ UnityUaalMaui.Unity.INativeUnityBridge
 {
     private UnityPlayerForActivityOrService player;
 
-    protected override void OnCreate(Bundle savedInstanceState)
+    public void SendContent(string eventName, string eventContent)
+    {
+        var content = eventName + "|" + (eventContent ?? string.Empty);
+
+        UnityPlayer.UnitySendMessage("Bridge", "ReceiveContent", content);
+    }
+
+    protected override void OnCreate(Bundle? savedInstanceState)
     {
         RequestWindowFeature(WindowFeatures.NoTitle);
 
         base.OnCreate(savedInstanceState);
         player = new UnityPlayerForActivityOrService(this, this);
+    
+        //CoordinatorLayout coordinatorLayout = new CoordinatorLayout(this);
+        //coordinatorLayout.SetBackgroundColor(Android.Graphics.Color.Red);
+        //coordinatorLayout.AddView(player.FrameLayout);
 
         this.SetContentView(player.FrameLayout);
-        player.FrameLayout.RequestFocus();
+        //player.FrameLayout.SetPadding(50, 25, 50, 50);
+     
+        player.FrameLayout?.RequestFocus();
+
+        
 
         UnityUaalMaui.Unity.UnityBridge.RegisterNativeBridge(this);
     }
 
+    public UnityPlayer? UnityPlayerConnection 
+    {
+		get { return player; }
+    }
+
+    // When Unity player unloaded move task to background
+    public void OnUnityPlayerUnloaded()
+    {
+        Android.Util.Log.Info(GetType().Name, nameof(OnUnityPlayerUnloaded) + "|" + GetHashCode() + "|");
+        MoveTaskToBack(true);
+    }
+
+    // Callback before Unity player process is killed
+    public void OnUnityPlayerQuitted()
+    {
+        Android.Util.Log.Info(GetType().Name, nameof(OnUnityPlayerQuitted) + "|" + GetHashCode() + "|");
+    }
+
+    protected override void OnNewIntent(Android.Content.Intent? intent)
+    {
+        Android.Util.Log.Info(GetType().Name, nameof(OnNewIntent) + "|" + GetHashCode() + "|" + "Intent=" + intent.Action + "," + intent.Flags);
+        Intent = intent;
+        player.NewIntent(intent);
+    }
+
+    protected override void OnDestroy()
+    {
+        Android.Util.Log.Info(GetType().Name, nameof(OnDestroy) + "|" + GetHashCode() + "|");
+        player.Destroy();
+        base.OnDestroy();
+
+        UnityUaalMaui.Unity.UnityBridge.RegisterNativeBridge(null);
+    }
+
+    protected override void OnStop()
+    {
+        Android.Util.Log.Info(GetType().Name, nameof(OnStop) + "|" + GetHashCode() + "|");
+        base.OnStop();
+        player.OnStop();
+    }
+
+    protected override void OnPause()
+    {
+        Android.Util.Log.Info(GetType().Name, nameof(OnPause) + "|" + GetHashCode() + "|");
+        base.OnPause();
+        player.OnPause();
+    }
+
+    protected override void OnStart()
+    {
+        Android.Util.Log.Info(GetType().Name, nameof(OnStart) + "|" + GetHashCode() + "|");
+        base.OnStart();
+        player.OnStart();
+    }
+
+    protected override void OnResume()
+    {
+        Android.Util.Log.Info(GetType().Name, nameof(OnResume) + "|" + GetHashCode() + "|");
+        base.OnResume();
+        player.OnResume();
+    }
+
+    public override void OnLowMemory()
+    {
+        base.OnLowMemory();
+        player.OnTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Critical);
+    }
+
+    public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
+    {
+        base.OnTrimMemory(level);
+        switch (level)
+        {
+            case TrimMemory.RunningModerate:
+                player.OnTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Medium);
+                break;
+            case TrimMemory.RunningLow:
+                player.OnTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.High);
+                break;
+            case TrimMemory.RunningCritical:
+                player.OnTrimMemory(UnityPlayerForActivityOrService.MemoryUsage.Critical);
+                break;
+        }
+    }
 
     // Configuration changes are used by Video playback logic in Unity
     public override void OnConfigurationChanged(Configuration newConfig)
@@ -60,108 +152,7 @@ public class UnityActivity : Activity,
         player.WindowFocusChanged(hasFocus);
     }
 
-    protected override void OnNewIntent(Android.Content.Intent intent)
-    {
-        Android.Util.Log.Info(GetType().Name, nameof(OnNewIntent) + "|" + GetHashCode() + "|" + "Intent=" + intent.Action + "," + intent.Flags);
-        Intent = intent;
-        player.NewIntent(intent);
-    }
-    protected override void OnStop()
-    {
-        Android.Util.Log.Info(GetType().Name, nameof(OnStop) + "|" + GetHashCode() + "|");
-        base.OnStop();
-
-        if (!MultiWindowSupport.GetAllowResizableWindow(this))
-        {
-            return;
-        }
-
-        Android.Util.Log.Info(GetType().Name, "UnityPlayer.Pause");
-        player.Pause();
-    }
-
-    protected override void OnPause()
-    {
-        Android.Util.Log.Info(GetType().Name, nameof(OnPause) + "|" + GetHashCode() + "|");
-        base.OnPause();
-
-        MultiWindowSupport.SaveMultiWindowMode(this);
-
-        if (MultiWindowSupport.GetAllowResizableWindow(this))
-        {
-            return;
-        }
-
-        Android.Util.Log.Info(GetType().Name, "UnityPlayer.Pause");
-        player.Pause();
-    }
-
-    protected override void OnStart()
-    {
-        Android.Util.Log.Info(GetType().Name, nameof(OnStart) + "|" + GetHashCode() + "|");
-        base.OnStart();
-
-        if (!MultiWindowSupport.GetAllowResizableWindow(this))
-        {
-            return;
-        }
-
-        Android.Util.Log.Info(GetType().Name, "UnityPlayer.Resume");
-        player.Resume();
-    }
-
-    protected override void OnResume()
-    {
-        Android.Util.Log.Info(GetType().Name, nameof(OnResume) + "|" + GetHashCode() + "|");
-        base.OnResume();
-
-        if (MultiWindowSupport.GetAllowResizableWindow(this) && !MultiWindowSupport.IsMultiWindowModeChangedToTrue(this))
-        {
-            return;
-        }
-
-        Android.Util.Log.Info(GetType().Name, "UnityPlayer.Resume");
-        player.Resume();
-    }
-
-    protected override void OnDestroy()
-    {
-        Android.Util.Log.Info(GetType().Name, nameof(OnDestroy) + "|" + GetHashCode() + "|");
-        base.OnDestroy();
-
-        UnityUaalMaui.Unity.UnityBridge.RegisterNativeBridge(null);
-    }
-
-    // TODO: Input events etc?
-
-    public void OnUnityPlayerQuitted()
-    {
-        Android.Util.Log.Info(GetType().Name, nameof(OnUnityPlayerQuitted) + "|" + GetHashCode() + "|");
-    }
-
-    public void OnUnityPlayerUnloaded()
-    {
-        Android.Util.Log.Info(GetType().Name, nameof(OnUnityPlayerUnloaded) + "|" + GetHashCode() + "|");
-        MoveTaskToBack(true);
-    }
-
-    public void SendContent(string eventName, string eventContent)
-    {
-        var content = eventName + "|" + (eventContent ?? string.Empty);
-
-        UnityPlayer.UnitySendMessage("Bridge", "ReceiveContent", content);
-    }
-
-    public void RequestPermissions(PermissionRequest request)
-    {
-        int requestCode = player.AddPermissionRequest(request);
-
-        // request.getPermissionNames => Not accesible? => Reach in via reflection?
-
-        //this.RequestPermissions(request. request.getPermissionNames(), requestCode);
-    }
-
-    public override bool DispatchKeyEvent(KeyEvent e)
+    public override bool DispatchKeyEvent(KeyEvent? e)
     {
         Android.Util.Log.Info(GetType().Name, nameof(DispatchKeyEvent) + "|" + GetHashCode() + "|" + e.Action);
         if (e.Action == KeyEventActions.Multiple)
@@ -172,31 +163,38 @@ public class UnityActivity : Activity,
         return base.DispatchKeyEvent(e);
     }
 
+    // Quit Unity
+    public void RequestPermissions(PermissionRequest? request)
+    {
+        player.AddPermissionRequest(request);
+    }
+
     public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
     {
+        base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         player.PermissionResponse(this, requestCode, permissions, grantResults?.Select(gr => (int)gr)?.ToArray() ?? Array.Empty<int>());
     }
 
     // Pass any events not handled by (unfocused) views straight to UnityPlayer
-    public override bool OnKeyUp(Keycode keyCode, KeyEvent e)
+    public override bool OnKeyUp(Keycode keyCode, KeyEvent? e)
     {
         Android.Util.Log.Info(GetType().Name, nameof(OnKeyUp));
         return player.FrameLayout.OnKeyUp(keyCode, e);
     }
 
-    public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+    public override bool OnKeyDown(Keycode keyCode, KeyEvent? e)
     {
         Android.Util.Log.Info(GetType().Name, nameof(OnKeyDown));
         return player.FrameLayout.OnKeyDown(keyCode, e);
     }
 
-    public override bool OnTouchEvent(MotionEvent e)
+    public override bool OnTouchEvent(MotionEvent? e)
     {
         Android.Util.Log.Info(GetType().Name, nameof(OnTouchEvent));
         return player.FrameLayout.OnTouchEvent(e);
     }
 
-    public override bool OnGenericMotionEvent(MotionEvent e)
+    public override bool OnGenericMotionEvent(MotionEvent? e)
     {
         Android.Util.Log.Info(GetType().Name, nameof(OnGenericMotionEvent));
         return player.FrameLayout.OnGenericMotionEvent(e);

@@ -8,9 +8,9 @@ namespace UnityUaalMaui.Unity
 #if __ANDROID__
         protected class UnityContentReceiver : Com.Unity3d.Player.BaseUnityContentReceiver
         {
-            protected override void OnReceivedUnityContent(string p0, string p1)
+            protected override void OnReceivedUnityContent(string p0)
             {
-                OnContentReceived?.Invoke(this, new UnityContentReceivedEventArgs(p0, p1));
+                OnContentReceived?.Invoke(this, new UnityContentReceivedEventArgs(p0, p0));
             }
         }
 #endif
