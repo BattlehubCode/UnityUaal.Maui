@@ -18,7 +18,7 @@ namespace UnityUaalMaui.Unity
 
     public static partial class UnityBridge
     {
-        public class UnityBridge_UnityFrameworkListener : UnityFrameworkListener
+        public class UnityBridge_UnityFrameworkListener :  UnityFrameworkListener
         {
             public override void UnityDidQuit(NSNotification notification)
             {

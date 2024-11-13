@@ -1,8 +1,10 @@
 // DO NOT PUT #pragma once or include guard check here
 // This header is designed to be able to be included multiple times
 
-// This header is used to redefine platforms after they were temporary undefined by UndefinePlatforms.h
+// This header is used to redefine iOS/tvOS platforms after they were temporary undefined by UndefinePlatforms.h
 // Please make sure to always use this paired with the UndefinePlatforms.h header.
+// Note: PLATFORM_IOS and PLATFORM_TVOS are redefined in 
+// /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/include/mach-o/loader.h
 //
 // ex.
 //
@@ -15,95 +17,6 @@
 #endif
 
 #undef DETAIL__PLATFORMS_HAD_BEEN_UNDEFINED_BY_UNDEFINEPLATFORMS_H
-
-// define all other platforms to 0
-#undef PLATFORM_WIN
-#if defined(DETAIL__TEMP_PLATFORM_WIN_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_WIN_WAS_1
-    #define PLATFORM_WIN 1
-#else
-    #define PLATFORM_WIN 0
-#endif
-
-#undef PLATFORM_OSX
-#if defined(DETAIL__TEMP_PLATFORM_OSX_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_OSX_WAS_1
-    #define PLATFORM_OSX 1
-#else
-    #define PLATFORM_OSX 0
-#endif
-
-#undef PLATFORM_LINUX
-#if defined(DETAIL__TEMP_PLATFORM_LINUX_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_LINUX_WAS_1
-    #define PLATFORM_LINUX 1
-#else
-    #define PLATFORM_LINUX 0
-#endif
-
-#undef PLATFORM_WINRT
-#if defined(DETAIL__TEMP_PLATFORM_WINRT_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_WINRT_WAS_1
-    #define PLATFORM_WINRT 1
-#else
-    #define PLATFORM_WINRT 0
-#endif
-
-#undef PLATFORM_FAMILY_WINDOWSGAMES
-#if defined(DETAIL__TEMP_PLATFORM_FAMILY_WINDOWSGAMES_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_FAMILY_WINDOWSGAMES_WAS_1
-    #define PLATFORM_FAMILY_WINDOWSGAMES 1
-#else
-    #define PLATFORM_FAMILY_WINDOWSGAMES 0
-#endif
-
-#undef PLATFORM_WEBGL
-#if defined(DETAIL__TEMP_PLATFORM_WEBGL_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_WEBGL_WAS_1
-    #define PLATFORM_WEBGL 1
-#else
-    #define PLATFORM_WEBGL 0
-#endif
-
-#undef PLATFORM_WASI
-#if defined(DETAIL__TEMP_PLATFORM_WASI_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_WASI_WAS_1
-    #define PLATFORM_WASI 1
-#else
-    #define PLATFORM_WASI 0
-#endif
-
-#undef PLATFORM_ANDROID
-#if defined(DETAIL__TEMP_PLATFORM_ANDROID_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_ANDROID_WAS_1
-    #define PLATFORM_ANDROID 1
-#else
-    #define PLATFORM_ANDROID 0
-#endif
-
-#undef PLATFORM_PS4
-#if defined(DETAIL__TEMP_PLATFORM_PS4_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_PS4_WAS_1
-    #define PLATFORM_PS4 1
-#else
-    #define PLATFORM_PS4 0
-#endif
-
-#undef PLATFORM_PS5
-#if defined(DETAIL__TEMP_PLATFORM_PS5_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_PS5_WAS_1
-    #define PLATFORM_PS5 1
-#else
-    #define PLATFORM_PS5 0
-#endif
-
-#undef PLATFORM_IPHONE
-#if defined(DETAIL__TEMP_PLATFORM_IPHONE_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_IPHONE_WAS_1
-    #define PLATFORM_IPHONE 1
-#else
-    #define PLATFORM_IPHONE 0
-#endif
 
 #undef PLATFORM_IOS
 #if defined(DETAIL__TEMP_PLATFORM_IOS_WAS_1)
@@ -121,42 +34,10 @@
     #define PLATFORM_TVOS 0
 #endif
 
-#undef PLATFORM_XBOXONE
-#if defined(DETAIL__TEMP_PLATFORM_XBOXONE_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_XBOXONE_WAS_1
-    #define PLATFORM_XBOXONE 1
+#undef PLATFORM_VISIONOS
+#if defined(DETAIL__TEMP_PLATFORM_VISIONOS_WAS_1)
+#undef DETAIL__TEMP_PLATFORM_VISIONOS_WAS_1
+#define PLATFORM_VISIONOS 1
 #else
-    #define PLATFORM_XBOXONE 0
-#endif
-
-#undef PLATFORM_SWITCH
-#if defined(DETAIL__TEMP_PLATFORM_SWITCH_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_SWITCH_WAS_1
-    #define PLATFORM_SWITCH 1
-#else
-    #define PLATFORM_SWITCH 0
-#endif
-
-#undef PLATFORM_LUMIN
-#if defined(DETAIL__TEMP_PLATFORM_LUMIN_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_LUMIN_WAS_1
-    #define PLATFORM_LUMIN 1
-#else
-    #define PLATFORM_LUMIN 0
-#endif
-
-#undef PLATFORM_STADIA
-#if defined(DETAIL__TEMP_PLATFORM_STADIA_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_STADIA_WAS_1
-    #define PLATFORM_STADIA 1
-#else
-    #define PLATFORM_STADIA 0
-#endif
-
-#undef PLATFORM_NETBSD
-#if defined(DETAIL__TEMP_PLATFORM_NETBSD_WAS_1)
-    #undef DETAIL__TEMP_PLATFORM_NETBSD_WAS_1
-    #define PLATFORM_NETBSD 1
-#else
-    #define PLATFORM_NETBSD 0
+#define PLATFORM_VISIONOS 0
 #endif
