@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<!--<TargetFrameworks>net8.0-android</TargetFrameworks>-->
 		<TargetFrameworks>net8.0-ios</TargetFrameworks>
+		<RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>UnityUaalMaui</RootNamespace>
 		<UseMaui>true</UseMaui>
